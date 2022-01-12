@@ -93,6 +93,16 @@ class pep257Checker:
                 "The default is not ignore any decorated functions. "
             ),
         )
+        parser.add_option(
+            "--ignore-self-only-init",
+            action="store",
+            parse_from_config=True,
+            default=False,
+            help=(
+                "pydocstyle ignore-self-only-init, "
+                "default False. "
+            ),
+        )
 
     @classmethod
     def parse_options(cls, options):
@@ -103,6 +113,7 @@ class pep257Checker:
             if options.ignore_decorators
             else None
         )
+        cls.ignore_self_only_init = options.ignore_self_only_init
 
     def _call_check_source(self):
         try:
@@ -111,6 +122,7 @@ class pep257Checker:
                 self.filename,
                 ignore_decorators=self.ignore_decorators,
                 ignore_inline_noqa=True,
+                ignore_self_only_init=self.ignore_self_only_init,
             )
         except TypeError:  # for versions of pydocstyle 5.1.1 and below
             return self.checker.check_source(
